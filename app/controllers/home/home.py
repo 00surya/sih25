@@ -1,5 +1,5 @@
 # controllers/main_controller.py
-from flask import Blueprint
+from flask import Blueprint, render_template
 # from flask_jwt_extended import jwt_required
 
 home_bp = Blueprint('home', __name__)
@@ -10,5 +10,5 @@ home_bp = Blueprint('home', __name__)
 @home_bp.route('/')
 # @jwt_required(optional=True)
 def home():
-    return "SIH'25 Home page"
+    return render_template('home/home.html')
 

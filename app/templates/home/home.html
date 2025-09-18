@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Lokniti{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/services/summary.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="info-card">
+        ⚠️ Demo Notice This prototype is hosted on CPU for demonstration purposes only. 
+        <br>
+        <pre>   Available demo services: <a href="/summary">Text Summarization➚</a> </pre>
+        
+        Performance and speed will be improved in the production version.
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/services/summary.js') }}"></script>
+{% endblock %}
