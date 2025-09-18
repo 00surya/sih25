@@ -64,9 +64,11 @@ def create_app():
 
     # Register blueprints
     from app.controllers.home.home import home_bp
+    from app.controllers.summary.controller import summary_bp
 
 
     app.register_blueprint(home_bp)
+    app.register_blueprint(summary_bp)
     
 
     # Socket.IO setup
