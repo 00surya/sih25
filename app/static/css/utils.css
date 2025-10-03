@@ -1,0 +1,205 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9f9fb;
+    color: #333;
+}
+
+nav {
+    background: #2c3e50;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.n-ach {
+    color: black;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.nav-a {
+    color: white;
+}
+
+
+button {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn {
+    display: inline-block;       /* ensures padding and width apply correctly */
+    text-align: center;          /* centers text horizontally */
+    vertical-align: middle;      /* helps with vertical alignment */
+    padding: 0.6rem 1rem;        /* space around the text */
+    line-height: 1.2;            /* controls vertical text height */
+    user-select: none;           /* optional: prevents text selection */
+    cursor: pointer;             /* pointer cursor on hover */
+    border-radius: 6px;
+    color: #fff;
+    text-decoration: none;       /* remove underline from <a> */
+    font-weight: 600;
+    font-size: 1rem;
+    /* optional: set a min-width for consistent button sizes */
+    min-width: 100px;
+  }
+  
+
+button:hover {
+    background: #1a252f;
+}
+
+.btn-primary-outline{
+    border:2px solid #2c3e50;
+    color: white;
+    background-color: transparent;
+    color: black !important;
+}
+
+.btn-primary-outline:hover {
+    color: white !important;
+}
+
+
+
+
+
+textarea {
+    /* width: 100%; */
+    min-height: 120px;
+    resize: vertical;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    resize: none;
+
+
+}
+
+.textarea-box {
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.info-card {
+    background: #fff3cd;
+    border-left: 5px solid #ffca2c;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+.sh-label {
+    margin: 20px 0;
+
+}
+
+h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    color: #2c3e50;
+}
+
+
+.footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+    padding: 1.5rem;
+}
+
+
+
+/* --- Notification System Styles --- */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 90000000;
+    width: 90%;
+    max-width: 350px;
+}
+
+.notification {
+    background-color: #fff;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: flex-start;
+    border-left: 5px solid #6b7280; /* Default border color */
+    
+    /* Animation properties */
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.4s ease-in-out;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    flex-shrink: 0; /* Prevents icon from shrinking */
+}
+
+.notification-content .heading {
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 4px 0;
+}
+
+.notification-content .message {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+}
+
+/* --- Notification Type Styles --- */
+
+/* Success (Green) */
+.notification-success { border-color: #22c55e; }
+.notification-success .notification-icon { color: #22c55e; }
+
+/* Error (Red) */
+.notification-error { border-color: #ef4444; }
+.notification-error .notification-icon { color: #ef4444; }
+
+/* Info (Blue) */
+.notification-info { border-color: #3b82f6; }
+.notification-info .notification-icon { color: #3b82f6; }

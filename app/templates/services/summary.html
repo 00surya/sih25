@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Summarize | Lokniti{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/services/summary.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="info-card">
+        ⚠️ This demo is hosted on CPU (Hugging Face). Response speed may be slower.
+        Optimized GPU-based deployment will be faster in production.
+    </div>
+
+    <h2 class="sh-label">Upload CSV (role, comment, section, article, chapter)</h2>
+
+    <label class="upload-box" id="uploadBox">
+        <input type="file" id="csvFile" accept=".csv" />
+        <i class="fa-solid fa-2x fa-file-csv"></i>
+        Drag & Drop CSV file here or Click to Upload
+    </label>
+    
+
+    <h2 class="sh-label">Test Summarization API</h2>
+    <div class="textarea-box">
+        <textarea id="userInput" placeholder="Enter text here..."></textarea>
+        <button onclick="summarize()">Summarize</button>
+    </div>
+
+    <div class="results" id="resultBox" style="display:none;">
+        <h3>Summary:</h3>
+        <p id="summaryOutput"></p>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/services/summary/summary.js') }}"></script>
+<script src="{{ url_for('static', filename='js/services/upload/upload.js') }}"></script>
+{% endblock %}

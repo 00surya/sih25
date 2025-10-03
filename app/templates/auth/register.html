@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %} Register | Lokniti {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+
+
+  <div class="register-wrapper">
+    <div class="register-container">
+      <h2>Create an Account 🚀</h2>
+      <div id="messageArea"></div>
+      <form method="POST" id="registerForm">
+        
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required placeholder="Enter your full name">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email / Phone</label>
+          <input type="text" id="email" name="email" required placeholder="Enter your email or phone">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Create a password">
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm_password" required placeholder="Confirm your password">
+        </div>
+
+        <button id="submitButton" type="submit">Register</button>
+
+        <div class="links">
+          <p>Already have an account? <a href="/auth/login">Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  {% endblock %}
+
+
+  {% block scripts %}
+  <script src="{{ url_for('static', filename='js/services/auth/register.js') }}"></script>
+  {% endblock %}

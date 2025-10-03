@@ -1,0 +1,558 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Lokniti{% endblock %}
+
+{% block head %}
+
+<style>
+  body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: #f9fafb;
+    margin: 0;
+    color: #111827;
+  }
+
+  /* Layout */
+  .dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    background: #2c3e50;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+  }
+
+  .sidebar h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #facc15;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 600;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-item.active {
+    background: #233240;
+  }
+
+  .nav-item i {
+    font-size: 1.2rem;
+  }
+
+  /* Main content */
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+
+  .chart-section {
+    display: none;
+    animation: fadeInUp 0.35s ease forwards;
+  }
+
+  .chart-section.active {
+    display: block;
+  }
+
+  .chart-box {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .chart-box h3 {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: #1e3a8a;
+  }
+
+  .chart-box p.chart-info {
+    margin-bottom: 1.5rem;
+    color: #4b5563;
+    font-size: 0.95rem;
+  }
+
+  .chart-canvas {
+    width: 100% !important;
+    height: 360px !important;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 70px;
+      align-items: center;
+    }
+    .sidebar h2 {
+      display: none;
+    }
+    .nav-item span {
+      display: none;
+    }
+  }
+
+  /* Dropdown */
+  #groupSelect {
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  #factEmotionChart {
+    width: 400px !important;
+    height: 400px !important;
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+}
+
+
+/* Container for comments (slide open/close) */
+.sample-comments {
+  max-height: 0;                /* hidden by default */
+  overflow: hidden;
+  opacity: 0;
+  padding: 0 1rem;              /* horizontal padding */
+  margin-top: 0.5rem;
+  border-left: 3px solid #3b82f6;
+  border-radius: 8px;
+  background-color: #f1f5f9;
+  transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
+}
+
+/* Show comments on click */
+.sample-comments.show {
+  max-height: 2000px;           /* large enough to fit content */
+  opacity: 1;
+  padding: 0.5rem 1rem;         /* add vertical padding when visible */
+}
+
+/* Individual comment styling */
+.sample-comments p {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  background-color: #e0e7ff;    /* light blue background */
+  border-left: 3px solid #3b82f6;
+  line-height: 1.4;
+}
+
+/* Optional: alternate background for better distinction */
+.sample-comments p:nth-child(odd) {
+  background-color: #f3f4f6;    /* light gray for odd comments */
+}
+
+
+/* Dashboard grid for All Charts */
+.all-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.chart-box {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.chart-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
+}
+
+.chart-box h4 {
+  margin-bottom: 0.5rem;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+.chart-box-out h4 {
+  margin-bottom: 0.5rem;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+.chart-box p {
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+.chart-box-out p {
+  margin-bottom: 0.5rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.chart-box ul {
+  padding-left: 1.2rem;
+  color: #4b5563;
+}
+.chart-box-out ul {
+  padding-left: 1.2rem;
+  color: #4b5563;
+}
+
+.chart-box ul li {
+  margin-bottom: 0.3rem;
+}
+.chart-box-out ul li {
+  margin-bottom: 0.3rem;
+}
+
+@media (max-width:768px) {
+  .chart-box {
+    flex-direction: column !important;
+  }
+}
+/* Toggle button */
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.35rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+}
+
+/* Make sidebar animate width + padding */
+.sidebar {
+  width: 250px;
+  transition: width 0.25s ease, padding 0.25s ease;
+  box-sizing: border-box;
+}
+
+/* Collapsed state */
+.sidebar.collapsed {
+  width: 70px;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  align-items: center;
+}
+
+/* Hide title & labels when collapsed */
+.sidebar.collapsed h2,
+.sidebar.collapsed .nav-item span {
+  display: none;
+}
+
+/* Keep nav items centered when collapsed */
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Ensure icons keep their size and text doesn't overflow */
+.nav-item i { display:inline-block; width: 28px; text-align:center; }
+.nav-item span { white-space: nowrap; margin-left: 6px; }
+
+/* Optional: small visual cue for collapsed state */
+.sidebar.collapsed .sidebar-toggle { transform: translateX(2px); }
+
+/* Ensure main-content flows automatically (no margin required) */
+.dashboard-layout { align-items: stretch; }
+
+/* All charts grid */
+#allChartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Chart box cards */
+.chart-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 320px;
+}
+
+/* Chart title / metrics */
+.chart-box h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.chart-metrics {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.8rem;
+}
+
+/* Metrics row */
+.metrics-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.metric-box {
+  flex: 1;
+  min-width: 180px;
+  background: #fff;
+  padding: 1.2rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+.metric-box h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.4rem;
+}
+
+.metric-box p {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="preloader" style="display:none; text-align:center; padding:1rem;">
+  <span id="preloader-number">000000</span>
+</div>
+
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle sidebar" aria-expanded="false">
+        ☰
+      </button>
+      
+
+    <h2>{{ title }}</h2>
+    
+    <div class="nav-item active" data-tab="bar"><i>📊</i><span>Sentiment</span></div>
+    <div class="nav-item" data-tab="trend"><i>📈</i><span>Trend</span></div>
+    <div class="nav-item" data-tab="wordcloud"><i>☁️</i><span>Word Cloud</span></div>
+    <div class="nav-item" data-tab="clusters"><i>🧩</i><span>Clusters</span></div>
+    <div class="nav-item" data-tab="factEmotion"><i>🎭</i><span>Fact vs Emotion</span></div>
+    <div class="nav-item" data-tab="relevance"><i>📉</i><span>Relevance</span></div>
+    <hr style="border-color: rgba(255,255,255,0.3); margin: 1rem 0;">
+    <div class="nav-item" data-tab="all"><i>📑</i><span>All Charts</span></div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <h1 class="mb-4 fw-bold text-primary">{{ title }}: analytics</h1>
+
+    <!-- Group Filter -->
+    <div>
+      <label for="groupSelect" style="font-weight:600; margin-right:0.5rem;">Select Group:</label>
+      <select id="groupSelect">
+        <option value="">Loading...</option>
+      </select>
+    </div>
+
+    <div id="dashboardContent">
+<!-- Sentiment Distribution -->
+ 
+<section id="bar" class="chart-section active">
+    <div class="chart-box" style="display:flex; flex-direction:row; gap:2rem; align-items:flex-start;">
+      
+      <!-- Chart -->
+      <div style="flex:1;">
+        <canvas id="sentimentBar" class="chart-canvas"></canvas>
+      </div>
+      
+      <!-- Textual info -->
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+        <h4>What this shows</h4>
+        <p>The sentiment distribution chart visualizes the proportion of positive, neutral, and negative comments. 
+           It helps identify the overall mood of the feedback quickly.</p>
+        <ul>
+          <li><strong>Positive:</strong> Comments expressing satisfaction or agreement</li>
+          <li><strong>Neutral:</strong> Comments with no clear sentiment</li>
+          <li><strong>Negative:</strong> Comments expressing dissatisfaction or issues</li>
+        </ul>
+      </div>
+  
+    </div>
+  </section>
+  
+      </section>
+
+<!-- Trend -->
+<section id="trend" class="chart-section">
+    <div class="chart-box-out" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+        <h4>Sentiment Trend Over Time</h4>
+        <p>This line chart shows how sentiments (positive, neutral, negative) change over time. 
+           It helps identify trends, spikes, or drops in sentiment for specific periods.</p>
+        <ul>
+          <li>Observe increases or decreases in positive or negative comments</li>
+          <li>Spot recurring patterns or anomalies</li>
+          <li>Understand engagement during certain timeframes</li>
+        </ul>
+      </div>
+    <div class="chart-box" style="display:flex; flex-direction:row; gap:2rem; align-items:flex-start;">
+      
+      <!-- Chart -->
+      <div style="flex:1;">
+        <canvas id="sentimentTrend" class="chart-canvas"></canvas>
+      </div>
+      
+      <!-- Textual info -->
+
+  
+    </div>
+  </section>
+
+     <!-- Word Cloud -->
+<section id="wordcloud" class="chart-section">
+          <!-- Textual info -->
+          <div class="chart-box-out" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+            <h4>Word Cloud</h4>
+            <p>This word cloud visualizes the most frequent terms appearing in comments. 
+               Larger words indicate higher frequency. It gives a quick overview of key topics.</p>
+            <ul>
+              <li>Quickly identify trending topics or keywords</li>
+              <li>Understand focus areas of the discussion</li>
+              <li>Combine with sentiment data for deeper insights</li>
+            </ul>
+          </div>
+    <div class="chart-box" style="display:flex; flex-direction:row; gap:2rem; align-items:flex-start;">
+      
+      <!-- Chart -->
+      <div style="flex:1; display: flex; justify-content: center;">
+        <canvas id="wordCloudCanvas" width="800" height="500"></canvas>
+      </div>
+      
+
+  
+    </div>
+  </section>
+
+<!-- Clusters -->
+<section id="clusters" class="chart-section">
+    <div class="chart-box-out" style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+        <h4>Topic Clusters</h4>
+        <p>Comments are grouped into clusters based on similarity. Each cluster represents a topic or theme.</p>
+        <ul>
+          <li>View top terms for each cluster</li>
+          <li>See sample comments for context</li>
+          <li>Identify main areas of discussion or concern</li>
+        </ul>
+      </div>
+    <div class="chart-box" style="display:flex; flex-direction:row; gap:2rem; align-items:flex-start; margin-bottom: 5px;">
+       
+      <!-- Cluster List -->
+      <div style="flex:1;">
+        <ul id="clusterList">
+          <!-- Populated dynamically -->
+        </ul>
+      </div>
+      
+      <!-- Textual info -->
+     
+  
+    </div>
+  </section>
+
+      <!-- Fact vs Emotion -->
+      <section id="factEmotion" class="chart-section">
+        <div class="chart-box" style="display:flex; flex-direction:row; gap:2rem; align-items:center;">
+          
+          <div style="flex:1;">
+            <canvas id="factEmotionChart" class="chart-canvas"></canvas>
+          </div>
+          
+          <div style="flex:1;">
+            <h4>Fact vs Emotion</h4>
+            <p>This chart compares factual statements to emotional expressions in comments. 
+               It helps determine whether discussions are data-driven or sentiment-driven.</p>
+            <ul>
+              <li><strong>Fact:</strong> Objective, verifiable statements</li>
+              <li><strong>Emotion:</strong> Subjective, opinion-based statements</li>
+            </ul>
+          </div>
+      
+        </div>
+      </section>
+      
+
+      <!-- Relevance -->
+      <section id="relevance" class="chart-section">
+        <div class="chart-box">
+          <h3>Relevance Graph</h3>
+          <canvas id="relevanceGraph" class="chart-canvas"></canvas>
+        </div>
+      </section>
+
+      <!-- All Charts
+      <section id="all" class="chart-section">
+        <div class="chart-box"><h3>All Charts</h3></div>
+      </section> -->
+
+      <section id="all" class="chart-section">
+        <!-- Summary Metrics -->
+        <div class="metrics-row" id="metricsRow">
+          <!-- Dynamically populated -->
+        </div>
+      
+        <!-- Grid of all charts -->
+        <div class="all-charts-grid" id="allChartsGrid"></div>
+      </section>
+      
+      
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.min.js"></script>
+<script src="{{ url_for('static', filename='js/services/dashboard/dash.js') }}"></script>
+{% endblock %}
